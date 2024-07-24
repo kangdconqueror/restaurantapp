@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'models/restaurant.dart';
 import 'providers/restaurant_provider.dart';
 import 'screens/restaurant_list_screen.dart';
+import 'screens/search_screen.dart';
 
 void main() {
   runApp(MyApp());
@@ -19,6 +19,9 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.blue,
         ),
         home: RestaurantListScreen(),
+        routes: {
+          '/search': (ctx) => SearchScreen(),
+        },
       ),
     );
   }
