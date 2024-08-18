@@ -4,13 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:restaurantapp/models/restaurant.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class RestaurantProvider with ChangeNotifier {
   List<Restaurant> _restaurants = [];
+  List<String> _favoriteRestaurantIds = [];
 
-  List<Restaurant> get restaurants {
-    return [..._restaurants];
-  }
+  List<Restaurant> get restaurants => [..._restaurants];
+  List<Restaurant> get favoriteRestaurants =>
+      _restaurants.where((restaurant) => _favoriteRestaurantIds.contains(restaurant.id)).toList();
 
   Future<void> fetchRestaurants() async {
     var connectivityResult = await (Connectivity().checkConnectivity());
@@ -19,6 +21,7 @@ class RestaurantProvider with ChangeNotifier {
     } else {
       await _fetchFromLocal();
     }
+    await _loadFavorites();
     notifyListeners();
   }
 
@@ -45,5 +48,25 @@ class RestaurantProvider with ChangeNotifier {
     } catch (error) {
       throw Exception('Failed to load restaurants from local: $error');
     }
+  }
+
+  Future<void> _loadFavorites() async {
+    final prefs = await SharedPreferences.getInstance();
+    _favoriteRestaurantIds = prefs.getStringList('favoriteRestaurants') ?? [];
+  }
+
+  Future<void> toggleFavorite(String restaurantId) async {
+    if (_favoriteRestaurantIds.contains(restaurantId)) {
+      _favoriteRestaurantIds.remove(restaurantId);
+    } else {
+      _favoriteRestaurantIds.add(restaurantId);
+    }
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setStringList('favoriteRestaurants', _favoriteRestaurantIds);
+    notifyListeners();
+  }
+
+  bool isFavorite(String restaurantId) {
+    return _favoriteRestaurantIds.contains(restaurantId);
   }
 }

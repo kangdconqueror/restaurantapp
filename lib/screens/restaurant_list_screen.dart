@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/restaurant_provider.dart';
 import 'restaurant_detail_screen.dart';
+import 'favorite_restaurant_list_screen.dart'; // Pastikan Anda mengimpor file ini
 
 class RestaurantListScreen extends StatelessWidget {
   @override
@@ -21,6 +22,18 @@ class RestaurantListScreen extends StatelessWidget {
             ),
           ],
         ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.favorite),
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => FavoriteListScreen(),
+                ),
+              );
+            },
+          ),
+        ],
       ),
       body: FutureBuilder(
         future: Provider.of<RestaurantProvider>(context, listen: false).fetchRestaurants(),

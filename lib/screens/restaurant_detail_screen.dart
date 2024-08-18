@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:restaurantapp/models/restaurant.dart';
+import 'package:restaurantapp/providers/restaurant_provider.dart';
 
 class RestaurantDetailScreen extends StatelessWidget {
   final Restaurant restaurant;
@@ -8,6 +10,8 @@ class RestaurantDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final restaurantProvider = Provider.of<RestaurantProvider>(context);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(restaurant.name),
@@ -18,17 +22,38 @@ class RestaurantDetailScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              AspectRatio(
-                aspectRatio: 6 / 4,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  child: Image.network(
-                    restaurant.pictureId,
-                    width: MediaQuery.of(context).size.width * 0.3,
-                    height: MediaQuery.of(context).size.width * 0.1,
-                    fit: BoxFit.cover,
+              Stack(
+                children: [
+                  AspectRatio(
+                    aspectRatio: 6 / 4,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: Image.network(
+                        restaurant.pictureId,
+                        width: double.infinity,
+                        height: double.infinity,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
                   ),
-                ),
+                  Positioned(
+                    right: 10,
+                    bottom: 10,
+                    child: FloatingActionButton(
+                      mini: true,
+                      backgroundColor: Colors.grey,
+                      onPressed: () {
+                        restaurantProvider.toggleFavorite(restaurant.id);
+                      },
+                      child: Icon(
+                        restaurantProvider.isFavorite(restaurant.id)
+                            ? Icons.favorite
+                            : Icons.favorite_border,
+                        color: Colors.red,
+                      ),
+                    ),
+                  ),
+                ],
               ),
               SizedBox(height: 16),
               Text(
