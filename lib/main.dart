@@ -131,6 +131,9 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.blue,
         ),
         home: RestaurantListScreen(),
+        routes: {
+          '/search': (ctx) => SearchScreen(),
+        },
       ),
     );
   }
