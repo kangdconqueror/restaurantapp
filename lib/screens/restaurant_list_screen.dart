@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/restaurant_provider.dart';
 import 'restaurant_detail_screen.dart';
-import 'favorite_restaurant_list_screen.dart'; // Pastikan Anda mengimpor file ini
+import 'favorite_restaurant_list_screen.dart';
+import 'settings_screen.dart';
 
 class RestaurantListScreen extends StatelessWidget {
   @override
@@ -29,6 +30,16 @@ class RestaurantListScreen extends StatelessWidget {
               Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (context) => FavoriteListScreen(),
+                ),
+              );
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.settings),
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => SettingsScreen(), // Navigasi ke halaman SettingsScreen
                 ),
               );
             },

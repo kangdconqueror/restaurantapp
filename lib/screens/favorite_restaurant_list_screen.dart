@@ -3,16 +3,57 @@ import 'package:provider/provider.dart';
 import 'restaurant_detail_screen.dart';
 import '../providers/restaurant_provider.dart';
 
-class FavoriteListScreen extends StatelessWidget {
+class FavoriteListScreen extends StatefulWidget {
+  @override
+  _FavoriteListScreenState createState() => _FavoriteListScreenState();
+}
+
+class _FavoriteListScreenState extends State<FavoriteListScreen> {
+  TextEditingController _searchController = TextEditingController();
+  String _searchQuery = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _searchController.addListener(() {
+      setState(() {
+        _searchQuery = _searchController.text;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Favorite Restaurants'),
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(48),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: TextField(
+              controller: _searchController,
+              decoration: InputDecoration(
+                hintText: 'Search...',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: BorderSide.none,
+                ),
+                filled: true,
+                fillColor: Colors.white,
+                prefixIcon: Icon(Icons.search),
+              ),
+            ),
+          ),
+        ),
       ),
       body: Consumer<RestaurantProvider>(
         builder: (ctx, restaurantProvider, _) {
-          final favoriteRestaurants = restaurantProvider.favoriteRestaurants;
+          final favoriteRestaurants = restaurantProvider.favoriteRestaurants
+              .where((restaurant) => restaurant.name
+                  .toLowerCase()
+                  .contains(_searchQuery.toLowerCase()))
+              .toList();
           return favoriteRestaurants.isEmpty
               ? Center(child: Text('No favorites yet!'))
               : ListView.builder(
@@ -52,5 +93,11 @@ class FavoriteListScreen extends StatelessWidget {
         },
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
   }
 }
