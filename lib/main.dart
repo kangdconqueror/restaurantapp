@@ -52,7 +52,7 @@ Future<void> showNotificationWithRandomRestaurant() async {
 
 Future<void> scheduleDailyNotification() async {
   final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
-  final tz.TZDateTime scheduledDate = tz.TZDateTime(tz.local, now.year, now.month, now.day, 23, 12);
+  final tz.TZDateTime scheduledDate = tz.TZDateTime(tz.local, now.year, now.month, now.day, 11, 00);
 
   await flutterLocalNotificationsPlugin.zonedSchedule(
     0,
@@ -83,8 +83,7 @@ Future<void> handleNotificationPayload(String? payload) async {
 
 void callbackDispatcher() {
   Workmanager().executeTask((task, inputData) {
-    // Your background task logic here.
-    // Example: Show notification or perform some work.
+    // Handle background task here
     print("Background task executed");
     return Future.value(true);
   });
@@ -113,8 +112,7 @@ void main() async {
     await scheduleDailyNotification();
   }
 
-  // Initialize Android Alarm Manager
-  WidgetsFlutterBinding.ensureInitialized();
+  // Initialize Workmanager
   Workmanager().initialize(callbackDispatcher, isInDebugMode: true);
 
   runApp(MyApp());
